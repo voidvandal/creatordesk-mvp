@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CreatorDesk MVP — Portfolio + Deal Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f0f14;--panel:#17171f;--panel2:#1f1f2a;--line:#2b2b38;--text:#ececf3;--muted:#9a9ab0;
+  --accent:#8b5cf6;--accent2:#f59e0b;--ok:#22c55e;--warn:#eab308;--bad:#ef4444;--radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.5}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;margin:0 0 .4em;line-height:1.15}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+nav.top{position:sticky;top:0;z-index:20;background:rgba(15,15,20,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav.top .wrap{display:flex;align-items:center;gap:6px;height:60px;overflow-x:auto}
+.logo{font-family:"Space Grotesk";font-weight:700;font-size:19px;margin-right:14px;white-space:nowrap;cursor:pointer}
+.logo span{color:var(--accent)}
+.tab{background:none;border:0;padding:8px 12px;border-radius:999px;color:var(--muted);cursor:pointer;white-space:nowrap;font-weight:500}
+.tab:hover{color:var(--text)}
+.tab.on{background:var(--panel2);color:var(--text)}
+.demo-pill{margin-left:auto;font-size:12px;color:var(--accent2);border:1px solid #5a4313;padding:3px 10px;border-radius:999px;white-space:nowrap}
+main{padding:28px 0 80px}
+.view{display:none}.view.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.btn{background:var(--accent);border:0;color:#fff;padding:10px 18px;border-radius:10px;font-weight:600;cursor:pointer}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+.btn.small{padding:6px 12px;font-size:13px}
+.btn.orange{background:var(--accent2);color:#1a1205}
+label{display:block;font-size:13px;color:var(--muted);margin:12px 0 5px}
+input,select,textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{min-height:80px;resize:vertical}
+.muted{color:var(--muted)}.small{font-size:13px}
+.hero{padding:40px 0 30px;text-align:center}
+.hero h1{font-size:clamp(30px,5vw,52px)}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{max-width:640px;margin:10px auto 22px;color:var(--muted);font-size:17px}
+.step{display:flex;gap:12px}
+.step .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--panel2);display:grid;place-items:center;font-weight:700;color:var(--accent)}
+.price{font-family:"Space Grotesk";font-size:30px;font-weight:700}
+.price small{font-size:14px;color:var(--muted);font-weight:500}
+ul.ticks{list-style:none;padding:0;margin:12px 0 0}
+ul.ticks li{padding:4px 0 4px 22px;position:relative;font-size:14px}
+ul.ticks li:before{content:"✓";position:absolute;left:0;color:var(--ok)}
+.tag{display:inline-block;font-size:12px;padding:3px 9px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);margin:2px 4px 2px 0}
+.tag.v{color:var(--ok);border-color:#1f5134}
+.section-title{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:28px 0 12px}
+/* portfolio */
+.pf-head{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.avatar{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:32px;font-weight:700;font-family:"Space Grotesk";flex:none}
+.stat{background:var(--panel2);border-radius:12px;padding:14px}
+.stat b{display:block;font-family:"Space Grotesk";font-size:24px}
+.work{aspect-ratio:9/16;border-radius:12px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:10px;font-size:13px;font-weight:600}
+.work .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.45);display:grid;place-items:center;font-size:16px}
+.work .views{position:absolute;top:8px;left:8px;font-size:11px;background:rgba(0,0,0,.5);padding:2px 7px;border-radius:999px}
+.ratecard td,.ratecard th{padding:9px 6px;border-bottom:1px solid var(--line);text-align:left}
+table{width:100%;border-collapse:collapse}
+.big-out{font-family:"Space Grotesk";font-size:clamp(28px,4vw,40px);font-weight:700;color:var(--accent2)}
+/* deals */
+.pipeline{display:flex;gap:4px;margin:12px 0}
+.pipeline div{flex:1;height:6px;border-radius:3px;background:var(--panel2)}
+.pipeline div.done{background:var(--accent)}
+.status{font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--panel2)}
+.deal{display:grid;gap:6px}
+.kv{display:flex;justify-content:space-between;font-size:14px;padding:4px 0}
+.kv.total{border-top:1px solid var(--line);margin-top:4px;padding-top:8px;font-weight:700}
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal-bg.on{display:flex}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);max-width:560px;width:100%;max-height:90vh;overflow:auto;padding:22px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ok);color:#06210f;font-weight:600;padding:10px 18px;border-radius:999px;transition:.25s;z-index:60}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.invoice{background:#fff;color:#111;border-radius:10px;padding:20px;font-size:13px}
+.invoice h3{color:#111}
+.invoice td{padding:6px 4px;border-bottom:1px solid #ddd}
+.empty{text-align:center;padding:40px;color:var(--muted)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+.note{font-size:13px;color:var(--muted);border-left:3px solid var(--accent2);padding:6px 12px;background:var(--panel);border-radius:0 8px 8px 0;margin-top:14px}
+</style>
+</head>
+<body>
+<nav class="top"><div class="wrap">
+  <div class="logo" data-go="home">Creator<span>Desk</span></div>
+  <button class="tab" data-go="home">Home</button>
+  <button class="tab" data-go="onboard">1 · Create profile</button>
+  <button class="tab" data-go="portfolio">2 · Portfolio page</button>
+  <button class="tab" data-go="rates">3 · Rate calculator</button>
+  <button class="tab" data-go="deals">4 · Deal desk</button>
+  <button class="tab" data-go="brands">5 · Brand view</button>
+  <span class="demo-pill">MVP demo · sample data</span>
+</div></nav>
+
+<main><div class="wrap">
+
+<!-- HOME -->
+<section class="view" id="v-home">
+  <div class="hero">
+    <span class="tag v">For Indian micro-creators · faceless, 3D, editors & more</span>
+    <h1>Your portfolio that <em>gets you paid</em> by brands.</h1>
+    <p>Free verified portfolio, a fair-price calculator, and a deal desk that handles the brief, contract, invoice and payment — so brands can't ghost you.</p>
+    <div class="row" style="justify-content:center">
+      <button class="btn" data-go="onboard">Create my free portfolio</button>
+      <button class="btn ghost" data-go="portfolio">See a sample page</button>
+    </div>
+  </div>
+
+  <div class="grid g4">
+    <div class="card step"><div class="n">1</div><div><b>Build your page</b><div class="muted small">Bio, work, stats and rate card at /username.</div></div></div>
+    <div class="card step"><div class="n">2</div><div><b>Know your price</b><div class="muted small">Calculator suggests a fair ₹ rate per deliverable.</div></div></div>
+    <div class="card step"><div class="n">3</div><div><b>Brands send briefs</b><div class="muted small">“Work with me” turns DMs into structured offers.</div></div></div>
+    <div class="card step"><div class="n">4</div><div><b>Get paid safely</b><div class="muted small">Advance + contract + invoice tracked in one place.</div></div></div>
+  </div>
+
+  <div class="section-title"><h2>How we make money</h2><span class="muted small">The business model you're testing</span></div>
+  <div class="grid g3">
+    <div class="card"><div class="muted small">Creators</div><h3>Free</h3><div class="price">₹0</div>
+      <ul class="ticks"><li>Portfolio page + media kit</li><li>Rate calculator</li><li>Brand inquiries</li><li>“Made with CreatorDesk” badge</li></ul></div>
+    <div class="card" style="border-color:var(--accent)"><div class="muted small">Creators</div><h3>Pro</h3><div class="price">₹99 <small>/month</small></div>
+      <ul class="ticks"><li>Custom domain</li><li>Remove badge</li><li>Page analytics</li><li>Premium themes</li></ul></div>
+    <div class="card"><div class="muted small">On every deal</div><h3>Deal fee</h3><div class="price">8% <small>of deal</small></div>
+      <ul class="ticks"><li>Only when the creator gets paid</li><li>Contract + invoice included</li><li>Payment tracked to the end</li><li>Brands pay ₹1,999/mo for search later</li></ul></div>
+  </div>
+</section>
+
+<!-- ONBOARD -->
+<section class="view" id="v-onboard">
+  <h2>Create your portfolio</h2>
+  <p class="muted">Fill this in and your public page updates instantly. (In the real product: Google sign-in + YouTube API pulls your stats automatically.)</p>
+  <div class="grid g2">
+    <form class="card" id="onboardForm" autocomplete="off">
+      <div class="grid g2" style="gap:0 12px">
+        <div><label>Display name</label><input name="name" required></div>
+        <div><label>Username (your link)</label><input name="username" required pattern="[a-z0-9_]{3,20}" title="3–20 lowercase letters, numbers or _"></div>
+      </div>
+      <label>One-line bio</label><input name="bio" maxlength="120">
+      <div class="grid g2" style="gap:0 12px">
+        <div><label>Niche</label><select name="niche"></select></div>
+        <div><label>Main platform</label><select name="platform"><option>YouTube Shorts</option><option>Instagram Reels</option><option>YouTube (long)</option></select></div>
+        <div><label>Followers / subscribers</label><input name="followers" type="number" min="0"></div>
+        <div><label>Average views per video</label><input name="avgViews" type="number" min="0"></div>
+        <div><label>Engagement rate (%)</label><input name="er" type="number" min="0" max="100" step="0.1"></div>
+        <div><label>Languages</label><input name="langs" placeholder="Hindi, English"></div>
+      </div>
+      <label>Past brand collabs (comma separated)</label><input name="collabs" placeholder="e.g. a gaming app, an edtech brand">
+      <div class="row" style="margin-top:16px">
+        <button class="btn" type="submit">Save & view my page →</button>
+        <span class="muted small">Your link: <b id="linkPreview"></b></span>
+      </div>
+    </form>
+    <div class="card">
+      <div class="muted small" style="margin-bottom:10px">Live preview</div>
+      <div id="miniPreview"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="view" id="v-portfolio">
+  <div class="row muted small" style="margin-bottom:12px">🔗 creatordesk.in/<b id="pfUser"></b><span class="spacer"></span><button class="btn ghost small" id="copyLink">Copy link</button></div>
+  <div class="card">
+    <div class="pf-head">
+      <div class="avatar" id="pfAvatar"></div>
+      <div style="flex:1;min-width:220px">
+        <h1 id="pfName" style="font-size:30px"></h1>
+        <div id="pfBio" class="muted"></div>
+        <div id="pfTags" style="margin-top:6px"></div>
+      </div>
+      <button class="btn orange" id="workBtn">Work with me</button>
+    </div>
+    <div class="grid g4" style="margin-top:20px" id="pfStats"></div>
+    <div class="small muted" style="margin-top:8px">✔ Stats verified via YouTube API · updated today <span class="tag" style="margin-left:6px">demo</span></div>
+  </div>
+
+  <div class="section-title"><h2>Featured work</h2><span class="muted small">Embeds of Shorts / Reels go here</span></div>
+  <div class="grid g4" id="pfWork"></div>
+
+  <div class="grid g2" style="margin-top:20px">
+    <div class="card"><h3>Rate card</h3><table class="ratecard" id="pfRates"></table>
+      <div class="small muted" style="margin-top:8px">Suggested by the rate calculator · creator can edit</div></div>
+    <div class="card"><h3>Brands I've worked with</h3><div id="pfCollabs"></div>
+      <h3 style="margin-top:18px">Audience</h3><div id="pfAudience" class="muted small"></div></div>
+  </div>
+</section>
+
+<!-- RATES -->
+<section class="view" id="v-rates">
+  <h2>What should I charge?</h2>
+  <p class="muted">The free tool that pulls creators in. It estimates a fair price from views, niche and engagement.</p>
+  <div class="grid g2">
+    <div class="card">
+      <div class="grid g2" style="gap:0 12px">
+        <div><label>Niche</label><select id="rNiche"></select></div>
+        <div><label>Deliverable</label><select id="rDel"></select></div>
+        <div><label>Average views per video</label><input id="rViews" type="number" min="0" value="25000"></div>
+        <div><label>Engagement rate (%)</label><input id="rEr" type="number" step="0.1" min="0" value="4"></div>
+      </div>
+      <label>Usage rights</label>
+      <select id="rRights"><option value="1">Organic only (on my channel)</option><option value="1.3">Brand can repost (30 days)</option><option value="1.6">Brand can run as ads</option></select>
+      <div class="note">Formula (MVP): views ÷ 1000 × niche rate × deliverable multiplier × engagement factor × usage rights. Tune it with real deal data later.</div>
+    </div>
+    <div class="card" style="text-align:center;display:flex;flex-direction:column;justify-content:center">
+      <div class="muted">Suggested price</div>
+      <div class="big-out" id="rOut">—</div>
+      <div class="muted small" id="rRange"></div>
+      <div class="grid g3" style="margin-top:18px;text-align:left" id="rBreak"></div>
+      <div class="row" style="justify-content:center;margin-top:18px">
+        <button class="btn" id="rApply">Add to my rate card</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEALS -->
+<section class="view" id="v-deals">
+  <div class="row"><h2 style="margin:0">Deal desk</h2><span class="spacer"></span>
+    <button class="btn ghost small" id="newDemoDeal">+ Simulate a brand inquiry</button></div>
+  <p class="muted">Every brand inquiry becomes a tracked deal: accept → contract → advance → content live → paid. This is where you earn your 8%.</p>
+  <div class="grid g4" id="dealSummary" style="margin-bottom:16px"></div>
+  <div class="grid g2" id="dealList"></div>
+</section>
+
+<!-- BRANDS -->
+<section class="view" id="v-brands">
+  <h2>Brand view: find creators</h2>
+  <p class="muted">The other side of the marketplace. Later, brands pay a subscription to search verified creators.</p>
+  <div class="card row" style="margin-bottom:16px">
+    <div style="flex:2;min-width:180px"><label style="margin-top:0">Search</label><input id="bSearch" placeholder="Name or keyword"></div>
+    <div style="flex:1;min-width:140px"><label style="margin-top:0">Niche</label><select id="bNiche"><option value="">All</option></select></div>
+    <div style="flex:1;min-width:140px"><label style="margin-top:0">Language</label><select id="bLang"><option value="">All</option><option>Hindi</option><option>English</option><option>Marathi</option><option>Tamil</option></select></div>
+    <div style="flex:1;min-width:140px"><label style="margin-top:0">Max budget (₹)</label><input id="bBudget" type="number" placeholder="Any"></div>
+  </div>
+  <div class="grid g3" id="bList"></div>
+</section>
+
+</div></main>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------- config ----------
+const NICHES = {
+  "Animation / 3D":220,"Tech & Gadgets":350,"Finance":450,"Education":250,
+  "Gaming":180,"Entertainment / Comedy":150,"Food":200,"Fashion & Beauty":300,"Fitness":260
+};
+const DELIVERABLES = {
+  "Short / Reel (integrated)":1,"Dedicated Short / Reel":1.5,"Long video integration (60–90s)":2.5,
+  "Dedicated long video":4,"Story (24h)":0.35,"Community / static post":0.6
+};
+const STAGES = ["New inquiry","Accepted","Contract signed","Advance paid","Content live","Paid in full"];
+const PLATFORM_FEE = 0.08;     // our cut
+const GATEWAY_FEE = 0.0236;    // ~2% + 18% GST (Razorpay standard)
+const inr = n => "₹" + Math.round(n).toLocaleString("en-IN");
+const compact = n => n>=1e6 ? (n/1e6).toFixed(1).replace(/\.0$/,"")+"M" : n>=1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,"")+"K" : String(n);
+const $ = s => document.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+// ---------- state (in memory, with best-effort local save) ----------
+let state = {
+  profile:{name:"Aarav Animates",username:"aaravanimates",bio:"3D 'what happens if' Shorts in Hindi. 9:16 storytelling that sticks.",
+    niche:"Animation / 3D",platform:"YouTube Shorts",followers:48000,avgViews:62000,er:5.2,langs:"Hindi, English",
+    collabs:"a gaming app, an edtech brand, a snack brand"},
+  rates:null,
+  deals:[
+    {id:1,brand:"PixelPlay Games",contact:"marketing@pixelplay.example",deliverable:"Dedicated Short / Reel",amount:9000,brief:"Promote our new puzzle game launch. 1 dedicated Short, link in description.",stage:0,date:"07 Nov"},
+    {id:2,brand:"StudyNest App",contact:"collabs@studynest.example",deliverable:"Short / Reel (integrated)",amount:6000,brief:"15s integration showing our flashcards feature.",stage:3,date:"28 Oct"},
+    {id:3,brand:"CrunchBox Snacks",contact:"brand@crunchbox.example",deliverable:"Long video integration (60–90s)",amount:14000,brief:"Integration in a long video; product sent separately.",stage:5,date:"12 Oct"}
+  ]
+};
+try{const s=JSON.parse(localStorage.getItem("cd_mvp")||"null"); if(s&&s.profile) state=s;}catch(e){}
+const save=()=>{try{localStorage.setItem("cd_mvp",JSON.stringify(state))}catch(e){}};
+
+// ---------- rate engine ----------
+function estimate({niche,del,views,er,rights=1}){
+  const cpm = NICHES[niche]||200, mult = DELIVERABLES[del]||1;
+  const ef = Math.min(1.5,Math.max(0.7,(er||3)/3.5));
+  const base = (views/1000)*cpm*mult*ef*rights;
+  return Math.max(500, Math.round(base/100)*100);
+}
+function rateCardFor(p){
+  return ["Short / Reel (integrated)","Dedicated Short / Reel","Long video integration (60–90s)","Story (24h)"]
+    .map(d=>({d,price:estimate({niche:p.niche,del:d,views:+p.avgViews||0,er:+p.er||3})}));
+}
+
+// ---------- routing ----------
+const VIEWS=["home","onboard","portfolio","rates","deals","brands"];
+function go(v){
+  if(!VIEWS.includes(v)) v="home";
+  document.querySelectorAll(".view").forEach(el=>el.classList.toggle("on",el.id==="v-"+v));
+  document.querySelectorAll(".tab").forEach(el=>el.classList.toggle("on",el.dataset.go===v));
+  if(location.hash!=="#"+v) history.replaceState(null,"","#"+v);
+  ({onboard:renderOnboard,portfolio:renderPortfolio,rates:renderRates,deals:renderDeals,brands:renderBrands}[v]||(()=>{}))();
+  window.scrollTo(0,0);
+}
+document.addEventListener("click",e=>{const g=e.target.closest("[data-go]"); if(g){e.preventDefault();go(g.dataset.go);}});
+window.addEventListener("hashchange",()=>go(location.hash.slice(1)));
+
+// ---------- toast & modal ----------
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("on"),2200);}
+function openModal(html){$("#modal").innerHTML=html;$("#modalBg").classList.add("on");}
+function closeModal(){$("#modalBg").classList.remove("on");}
+$("#modalBg").addEventListener("click",e=>{if(e.target.id==="modalBg"||e.target.closest("[data-close]"))closeModal();});
+
+// ---------- onboarding ----------
+const f=$("#onboardForm");
+f.niche.innerHTML=Object.keys(NICHES).map(n=>`<option>${n}</option>`).join("");
+function renderOnboard(){
+  const p=state.profile;
+  for(const k in p){ if(f[k]) f[k].value=p[k]; }
+  updatePreview();
+}
+function readForm(){const o={};new FormData(f).forEach((v,k)=>o[k]=v);o.followers=+o.followers||0;o.avgViews=+o.avgViews||0;o.er=+o.er||0;return o;}
+function updatePreview(){
+  const p=readForm();
+  $("#linkPreview").textContent="creatordesk.in/"+(p.username||"yourname");
+  $("#miniPreview").innerHTML=`
+    <div class="pf-head"><div class="avatar" style="width:60px;height:60px;font-size:24px">${esc((p.name||"?")[0])}</div>
+    <div><h3 style="margin:0">${esc(p.name||"Your name")}</h3><div class="muted small">${esc(p.bio||"Your bio")}</div>
+    <span class="tag">${esc(p.niche)}</span><span class="tag">${esc(p.platform)}</span></div></div>
+    <div class="grid g3" style="margin-top:14px">
+      <div class="stat"><b>${compact(p.followers)}</b><span class="muted small">followers</span></div>
+      <div class="stat"><b>${compact(p.avgViews)}</b><span class="muted small">avg views</span></div>
+      <div class="stat"><b>${p.er}%</b><span class="muted small">engagement</span></div></div>
+    <div class="note">Starting price for a Short: <b>${inr(estimate({niche:p.niche,del:"Short / Reel (integrated)",views:p.avgViews,er:p.er}))}</b></div>`;
+}
+f.addEventListener("input",updatePreview);
+f.addEventListener("submit",e=>{e.preventDefault(); if(!f.reportValidity())return;
+  state.profile=readForm(); state.rates=null; save(); toast("Portfolio saved"); go("portfolio");});
+
+// ---------- portfolio ----------
+const GRADS=["#7c3aed,#ec4899","#0ea5e9,#22c55e","#f59e0b,#ef4444","#6366f1,#06b6d4"];
+const SAMPLE_WORK=["What if you fell into a black hole?","Inside your body when you sneeze","What if Earth stopped spinning?","How a volcano really erupts"];
+function renderPortfolio(){
+  const p=state.profile, rates=state.rates||rateCardFor(p);
+  $("#pfUser").textContent=p.username; $("#pfAvatar").textContent=(p.name||"?")[0];
+  $("#pfName").textContent=p.name; $("#pfBio").textContent=p.bio;
+  $("#pfTags").innerHTML=`<span class="tag v">✔ Verified</span><span class="tag">${esc(p.niche)}</span><span class="tag">${esc(p.platform)}</span>`+
+    (p.langs||"").split(",").filter(Boolean).map(l=>`<span class="tag">${esc(l.trim())}</span>`).join("");
+  const mv=Math.round(p.avgViews*30);
+  $("#pfStats").innerHTML=[[compact(p.followers),"followers"],[compact(p.avgViews),"avg views / video"],[p.er+"%","engagement rate"],[compact(mv),"views last 30 days"]]
+    .map(([b,s])=>`<div class="stat"><b>${b}</b><span class="muted small">${s}</span></div>`).join("");
+  $("#pfWork").innerHTML=SAMPLE_WORK.map((t,i)=>`<div class="work" style="background:linear-gradient(160deg,${GRADS[i]})">
+     <span class="views">▶ ${compact(Math.round(p.avgViews*(1.6-i*0.3)))} views</span><div class="play">▶</div>${esc(t)}</div>`).join("");
+  $("#pfRates").innerHTML="<tr><th>Deliverable</th><th>Price</th></tr>"+rates.map(r=>`<tr><td>${esc(r.d)}</td><td><b>${inr(r.price)}</b></td></tr>`).join("");
+  const cs=(p.collabs||"").split(",").map(s=>s.trim()).filter(Boolean);
+  $("#pfCollabs").innerHTML=cs.length?cs.map(c=>`<span class="tag">${esc(c)}</span>`).join(""):'<span class="muted small">None yet — first deal is on us!</span>';
+  $("#pfAudience").innerHTML=`Top cities: Mumbai, Delhi, Pune · Age 18–24 (58%) · ${esc(p.langs||"—")} speaking <span class="tag">demo</span>`;
+}
+$("#copyLink").onclick=async()=>{try{await navigator.clipboard.writeText("creatordesk.in/"+state.profile.username);toast("Link copied");}catch(e){toast("Copy not allowed here");}};
+$("#workBtn").onclick=()=>openInquiry(state.profile);
+
+function openInquiry(p){
+  const opts=Object.keys(DELIVERABLES).map(d=>`<option>${d}</option>`).join("");
+  openModal(`<h2>Work with ${esc(p.name)}</h2><p class="muted small">This replaces messy DMs. The creator gets a structured offer in their deal desk.</p>
+   <form id="inqForm">
+    <label>Brand name</label><input name="brand" required>
+    <label>Work email</label><input name="contact" type="email" required>
+    <label>Deliverable</label><select name="deliverable">${opts}</select>
+    <label>Budget offered (₹)</label><input name="amount" type="number" min="500" required>
+    <div class="small muted" id="inqHint" style="margin-top:6px"></div>
+    <label>Brief</label><textarea name="brief" required placeholder="What should the content show? Deadline? Links?"></textarea>
+    <div class="row" style="margin-top:16px"><button class="btn" type="submit">Send brief</button><button class="btn ghost" type="button" data-close>Cancel</button></div>
+   </form>`);
+  const form=$("#inqForm");
+  const hint=()=>{const est=estimate({niche:p.niche,del:form.deliverable.value,views:+p.avgViews,er:+p.er});
+    form.querySelector("#inqHint").innerHTML=`Creator's listed rate for this: <b>${inr(est)}</b>`; if(!form.amount.value) form.amount.placeholder=est;};
+  form.deliverable.onchange=hint; hint();
+  form.onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(form));
+    state.deals.unshift({id:Date.now(),brand:d.brand,contact:d.contact,deliverable:d.deliverable,amount:+d.amount,brief:d.brief,stage:0,
+      date:new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"short"})});
+    save();closeModal();toast("Brief sent to creator's deal desk");};
+}
+
+// ---------- rate calculator ----------
+$("#rNiche").innerHTML=Object.keys(NICHES).map(n=>`<option>${n}</option>`).join("");
+$("#rDel").innerHTML=Object.keys(DELIVERABLES).map(n=>`<option>${n}</option>`).join("");
+function renderRates(first){
+  if(first!==false && !renderRates._init){ $("#rNiche").value=state.profile.niche; $("#rViews").value=state.profile.avgViews; $("#rEr").value=state.profile.er; renderRates._init=true; }
+  const niche=$("#rNiche").value, del=$("#rDel").value, views=+$("#rViews").value||0, er=+$("#rEr").value||0, rights=+$("#rRights").value;
+  const p=estimate({niche,del,views,er,rights});
+  $("#rOut").textContent=inr(p);
+  $("#rRange").textContent=`Negotiation range: ${inr(p*0.8)} – ${inr(p*1.25)}`;
+  const net=p*(1-PLATFORM_FEE-GATEWAY_FEE);
+  $("#rBreak").innerHTML=`<div class="stat"><span class="muted small">Brand pays</span><b>${inr(p)}</b></div>
+    <div class="stat"><span class="muted small">Fees (8% + gateway)</span><b>${inr(p-net)}</b></div>
+    <div class="stat"><span class="muted small">You receive</span><b style="color:var(--ok)">${inr(net)}</b></div>`;
+}
+["#rNiche","#rDel","#rViews","#rEr","#rRights"].forEach(s=>$(s).addEventListener("input",()=>renderRates(false)));
+$("#rApply").onclick=()=>{
+  const rates=state.rates||rateCardFor(state.profile); const d=$("#rDel").value;
+  const price=estimate({niche:$("#rNiche").value,del:d,views:+$("#rViews").value,er:+$("#rEr").value,rights:+$("#rRights").value});
+  const i=rates.findIndex(r=>r.d===d); if(i>=0) rates[i].price=price; else rates.push({d,price});
+  state.rates=rates; save(); toast("Added to rate card"); };
+
+// ---------- deal desk ----------
+function renderDeals(){
+  const ds=state.deals;
+  const pipeline=ds.filter(d=>d.stage<5).reduce((a,d)=>a+d.amount,0);
+  const paid=ds.filter(d=>d.stage===5).reduce((a,d)=>a+d.amount,0);
+  const ours=ds.filter(d=>d.stage>=3).reduce((a,d)=>a+d.amount*PLATFORM_FEE,0);
+  $("#dealSummary").innerHTML=[["Active deals",ds.filter(d=>d.stage<5).length],["In pipeline",inr(pipeline)],["Paid to creator (gross)",inr(paid)],["Our revenue (8%)",inr(ours)]]
+    .map(([s,b])=>`<div class="stat"><span class="muted small">${s}</span><b>${b}</b></div>`).join("");
+  if(!ds.length){$("#dealList").innerHTML='<div class="card empty">No deals yet. Share your portfolio link or simulate an inquiry.</div>';return;}
+  $("#dealList").innerHTML=ds.map(d=>{
+    const fee=d.amount*PLATFORM_FEE, gw=d.amount*GATEWAY_FEE, net=d.amount-fee-gw;
+    const nextLabel=["Accept offer","Send contract","Request 50% advance","Mark content live","Release final payment"][d.stage];
+    const color=d.stage===5?"var(--ok)":d.stage===0?"var(--accent2)":"var(--accent)";
+    return `<div class="card deal">
+      <div class="row"><b style="font-size:17px">${esc(d.brand)}</b><span class="spacer"></span><span class="status" style="color:${color}">${STAGES[d.stage]}</span></div>
+      <div class="muted small">${esc(d.deliverable)} · received ${esc(d.date)}</div>
+      <div class="small">${esc(d.brief)}</div>
+      <div class="pipeline">${STAGES.map((_,i)=>`<div class="${i<=d.stage?"done":""}"></div>`).join("")}</div>
+      <div class="kv"><span>Deal amount</span><b>${inr(d.amount)}</b></div>
+      <div class="kv muted"><span>Platform fee (8%)</span><span>− ${inr(fee)}</span></div>
+      <div class="kv muted"><span>Payment gateway (~2.36%)</span><span>− ${inr(gw)}</span></div>
+      <div class="kv total"><span>Creator receives</span><span style="color:var(--ok)">${inr(net)}</span></div>
+      <div class="row" style="margin-top:8px">
+        ${d.stage<5?`<button class="btn small" data-adv="${d.id}">${nextLabel} →</button>`:'<span class="small" style="color:var(--ok)">✔ Completed</span>'}
+        <button class="btn ghost small" data-inv="${d.id}">Invoice</button>
+        ${d.stage>=1?`<button class="btn ghost small" data-con="${d.id}">Contract</button>`:""}
+        ${d.stage===0?`<button class="btn ghost small" data-del="${d.id}">Decline</button>`:""}
+      </div></div>`;}).join("");
+}
+$("#dealList").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b)return; const id=+(b.dataset.adv||b.dataset.inv||b.dataset.con||b.dataset.del);
+  const d=state.deals.find(x=>x.id===id); if(!d)return;
+  if(b.dataset.adv){d.stage=Math.min(5,d.stage+1);save();renderDeals();toast(STAGES[d.stage]);}
+  if(b.dataset.del){state.deals=state.deals.filter(x=>x.id!==id);save();renderDeals();toast("Deal declined");}
+  if(b.dataset.inv) showInvoice(d);
+  if(b.dataset.con) showContract(d);
+});
+$("#newDemoDeal").onclick=()=>{
+  const brands=["FitFuel Protein","CodeCamp Online","TravelTales App","GlowUp Skincare","ByteBank Finance"];
+  const del=Object.keys(DELIVERABLES)[Math.floor(Math.random()*3)];
+  const est=estimate({niche:state.profile.niche,del,views:state.profile.avgViews,er:state.profile.er});
+  state.deals.unshift({id:Date.now(),brand:brands[Math.floor(Math.random()*brands.length)],contact:"team@brand.example",deliverable:del,
+    amount:Math.round(est*(0.7+Math.random()*0.5)/100)*100,brief:"Looking for a creative integration for our festive campaign. Deadline in 2 weeks.",stage:0,
+    date:new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"short"})});
+  save();renderDeals();toast("New brand inquiry received");
+};
+function showInvoice(d){
+  const p=state.profile;
+  openModal(`<div class="invoice"><div class="row"><h3 style="margin:0">INVOICE</h3><span class="spacer"></span><span>#CD-${String(d.id).slice(-5)}</span></div>
+   <p><b>From:</b> ${esc(p.name)} (creatordesk.in/${esc(p.username)})<br><b>To:</b> ${esc(d.brand)} · ${esc(d.contact)}<br><b>Date:</b> ${esc(d.date)}</p>
+   <table><tr><td><b>Item</b></td><td style="text-align:right"><b>Amount</b></td></tr>
+   <tr><td>${esc(d.deliverable)} — ${esc(p.platform)}</td><td style="text-align:right">${inr(d.amount)}</td></tr>
+   <tr><td>Advance (50%) due on signing</td><td style="text-align:right">${inr(d.amount/2)}</td></tr>
+   <tr><td>Balance due on content going live</td><td style="text-align:right">${inr(d.amount/2)}</td></tr></table>
+   <p style="font-size:11px;color:#666;margin-top:12px">GST and TDS lines get added here once the creator's tax details are set up (confirm rules with a CA). Payment via secure link (UPI / card).</p></div>
+   <div class="row" style="margin-top:14px"><button class="btn ghost" data-close>Close</button></div>`);
+}
+function showContract(d){
+  const p=state.profile;
+  openModal(`<h2>Collaboration agreement</h2><p class="muted small">Auto-filled template (get a lawyer to review the real one).</p>
+   <div class="card small" style="background:var(--panel2)">
+   <p><b>Parties:</b> ${esc(d.brand)} (“Brand”) and ${esc(p.name)} (“Creator”).</p>
+   <p><b>Deliverable:</b> ${esc(d.deliverable)} on ${esc(p.platform)}.</p>
+   <p><b>Fee:</b> ${inr(d.amount)} — 50% advance before production, 50% within 7 days of content going live.</p>
+   <p><b>Revisions:</b> 1 round of script/edit feedback included.</p>
+   <p><b>Usage:</b> Organic only unless ad rights are purchased separately.</p>
+   <p><b>Late payment:</b> Creator may remove the content if the balance is unpaid 15 days after going live.</p></div>
+   <div class="row" style="margin-top:14px"><button class="btn ghost" data-close>Close</button></div>`);
+}
+
+// ---------- brand view ----------
+const DIRECTORY=[
+  {name:"Aarav Animates",niche:"Animation / 3D",langs:"Hindi, English",followers:48000,avgViews:62000,er:5.2,city:"Mumbai"},
+  {name:"Byte Sized Tech",niche:"Tech & Gadgets",langs:"English, Hindi",followers:120000,avgViews:85000,er:3.8,city:"Bengaluru"},
+  {name:"Paisa Wise",niche:"Finance",langs:"Hindi",followers:76000,avgViews:40000,er:4.4,city:"Delhi"},
+  {name:"Kitchen Katha",niche:"Food",langs:"Marathi, Hindi",followers:31000,avgViews:28000,er:6.1,city:"Pune"},
+  {name:"Level Up Tamil",niche:"Gaming",langs:"Tamil, English",followers:95000,avgViews:70000,er:4.9,city:"Chennai"},
+  {name:"Gym Desi",niche:"Fitness",langs:"Hindi",followers:22000,avgViews:18000,er:7.0,city:"Jaipur"},
+  {name:"Mystery Frames",niche:"Animation / 3D",langs:"English",followers:150000,avgViews:210000,er:3.1,city:"Hyderabad"},
+  {name:"Padhai Shorts",niche:"Education",langs:"Hindi, Marathi",followers:54000,avgViews:47000,er:5.5,city:"Nagpur"},
+  {name:"Glow Notes",niche:"Fashion & Beauty",langs:"English, Hindi",followers:64000,avgViews:36000,er:4.2,city:"Kolkata"}
+];
+$("#bNiche").innerHTML+=Object.keys(NICHES).map(n=>`<option>${n}</option>`).join("");
+function renderBrands(){
+  const q=$("#bSearch").value.toLowerCase(), n=$("#bNiche").value, l=$("#bLang").value, max=+$("#bBudget").value||Infinity;
+  const me=state.profile;
+  const list=DIRECTORY.map(c=>c.name===me.name?{...c,...me}:c).map(c=>({...c,price:estimate({niche:c.niche,del:"Short / Reel (integrated)",views:+c.avgViews,er:+c.er})}))
+    .filter(c=>(!q||c.name.toLowerCase().includes(q)||c.niche.toLowerCase().includes(q))&&(!n||c.niche===n)&&(!l||(c.langs||"").includes(l))&&c.price<=max);
+  $("#bList").innerHTML=list.length?list.map((c,i)=>`<div class="card">
+    <div class="row"><div class="avatar" style="width:46px;height:46px;font-size:18px">${esc(c.name[0])}</div>
+    <div><b>${esc(c.name)}</b> <span class="tag v">✔</span><div class="muted small">${esc(c.niche)}${c.city?" · "+esc(c.city):""}</div></div></div>
+    <div class="grid g3" style="margin:12px 0;gap:8px">
+      <div class="stat" style="padding:8px"><b style="font-size:17px">${compact(+c.followers)}</b><span class="muted small">followers</span></div>
+      <div class="stat" style="padding:8px"><b style="font-size:17px">${compact(+c.avgViews)}</b><span class="muted small">avg views</span></div>
+      <div class="stat" style="padding:8px"><b style="font-size:17px">${c.er}%</b><span class="muted small">eng.</span></div></div>
+    <div class="small muted">${esc(c.langs)}</div>
+    <div class="row" style="margin-top:10px"><span>From <b>${inr(c.price)}</b>/Short</span><span class="spacer"></span><button class="btn small" data-brief="${i}">Send brief</button></div>
+  </div>`).join(""):'<div class="card empty">No creators match these filters.</div>';
+  $("#bList").querySelectorAll("[data-brief]").forEach(b=>b.onclick=()=>openInquiry(list[+b.dataset.brief]));
+}
+["#bSearch","#bNiche","#bLang","#bBudget"].forEach(s=>$(s).addEventListener("input",renderBrands));
+
+// ---------- start ----------
+go(location.hash.slice(1)||"home");
+</script>
+</body>
+</html>
